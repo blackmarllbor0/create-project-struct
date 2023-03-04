@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/blackmarllboro/create-project-strcut/internal/app/dir"
+	"github.com/blackmarllboro/create-project-struct/internal/app/dir"
+
 	"github.com/charmbracelet/log"
 )
 

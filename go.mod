@@ -1,4 +1,4 @@
-module github.com/blackmarllboro/create-project-strcut
+module github.com/blackmarllboro/create-project-struct
 
 go 1.19
 

@@ -3,9 +3,10 @@ package dir
 import (
 	"errors"
 	"fmt"
-	"github.com/blackmarllboro/create-project-strcut/internal"
-	"github.com/blackmarllboro/create-project-strcut/internal/pkg/args"
 	"os"
+
+	"github.com/blackmarllboro/create-project-struct/internal"
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
 
 const perm = 0755 // Право доступа для создания папок

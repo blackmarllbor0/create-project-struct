@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/blackmarllboro/create-project-struct/internal"
+	"github.com/blackmarllboro/create-project-struct/internal/app/file"
 	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
 
@@ -16,15 +17,20 @@ const (
 	cmdDir      = "cmd"
 	pkgDir      = "pkg"
 	internalDir = "internal"
+	appDir      = "app"
+	cfgDir      = "config"
 )
 
 type Dirs struct {
 	projectName string
-	log         internal.Logger
+	file        *file.File
 }
 
 func NewDirs(log internal.Logger) *Dirs {
-	return &Dirs{log: log}
+	f := file.NewFile(log)
+	return &Dirs{
+		file: f,
+	}
 }
 
 // CreateProject создает проект.
@@ -53,7 +59,7 @@ func (d *Dirs) createProjectDir() error {
 			return errors.New("такая директория уже существует")
 		}
 
-		d.log.Info("корневая директория проекта успешно создана")
+		d.file.Logger.Info("корневая директория проекта успешно создана")
 	}
 
 	return nil
@@ -61,13 +67,60 @@ func (d *Dirs) createProjectDir() error {
 
 // createProjectDirs создает структуру папок в директории с проектом.
 func (d *Dirs) createProjectDirs() error {
-	projectDirs := [3]string{cmdDir, pkgDir, internalDir}
+	projectDirs := [4]string{cmdDir, pkgDir, internalDir, cfgDir}
 	for i := 0; i < len(projectDirs); i++ {
-		dir := fmt.Sprintf("%s/%s", d.projectName, projectDirs[i])
+		currentDir := projectDirs[i]
+
+		dir := fmt.Sprintf("%s/%s", d.projectName, currentDir)
 		if err := os.Mkdir(dir, perm); err != nil {
-			return errors.New("такая директория уже существует")
+			return err
 		}
-		d.log.Info("Директория ./" + projectDirs[i] + " успешно создана")
+
+		// в зависимости от текущего создаваемого каталога создаём файлы или подкаталоги.
+		if currentDir == cmdDir {
+			if err := d.file.GenerateMainFile(dir + "/" + d.projectName); err != nil {
+				return err
+			}
+		} else if currentDir == internalDir {
+			if err := d.createInternalSubDir(); err != nil {
+				return err
+			}
+		} else if currentDir == cfgDir {
+			if err := d.file.GenerateCfgFile(dir); err != nil {
+				return err
+			}
+		}
+
+		d.file.Logger.Info("директория ./" + currentDir + " успешно создана")
 	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if err := d.file.GenerateGoModFile(currentDir + "/" + d.projectName); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// createInternalSubDir создает подкаталоги "app" и pkg в директории internal.
+func (d *Dirs) createInternalSubDir() error {
+	internalSubDirs := [2]string{pkgDir, appDir}
+
+	for i := 0; i < len(internalSubDirs); i++ {
+		currentDir := internalSubDirs[i]
+
+		createSubDirPath := d.projectName + "/" + internalDir + "/" + currentDir
+
+		if err := os.Mkdir(createSubDirPath, perm); err != nil {
+			return err
+		}
+
+		d.file.Logger.Info("директория ./" + internalDir + "/" + currentDir)
+	}
+
 	return nil
 }

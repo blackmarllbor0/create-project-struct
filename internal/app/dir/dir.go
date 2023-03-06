@@ -27,10 +27,7 @@ type Dirs struct {
 }
 
 func NewDirs(log internal.Logger) *Dirs {
-	f := file.NewFile(log)
-	return &Dirs{
-		file: f,
-	}
+	return &Dirs{file: file.NewFile(log)}
 }
 
 // CreateProject создает проект.
@@ -65,6 +62,11 @@ func (d *Dirs) createProjectDir() error {
 	return nil
 }
 
+// logCreteDir выводит лог о создании переданной директории.
+func (d *Dirs) logCreteDir(dir string) {
+	d.file.Logger.Info("директория ./" + dir + " успешно создана")
+}
+
 // createProjectDirs создает структуру папок в директории с проектом.
 func (d *Dirs) createProjectDirs() error {
 	projectDirs := [4]string{cmdDir, pkgDir, internalDir, cfgDir}
@@ -78,7 +80,7 @@ func (d *Dirs) createProjectDirs() error {
 
 		// в зависимости от текущего создаваемого каталога создаём файлы или подкаталоги.
 		if currentDir == cmdDir {
-			if err := d.file.GenerateMainFile(dir + "/" + d.projectName); err != nil {
+			if err := d.file.GenerateMainFile(dir + "/" + d.projectName + ".go"); err != nil {
 				return err
 			}
 		} else if currentDir == internalDir {
@@ -91,7 +93,7 @@ func (d *Dirs) createProjectDirs() error {
 			}
 		}
 
-		d.file.Logger.Info("директория ./" + currentDir + " успешно создана")
+		d.logCreteDir(currentDir)
 	}
 
 	currentDir, err := os.Getwd()
@@ -119,7 +121,7 @@ func (d *Dirs) createInternalSubDir() error {
 			return err
 		}
 
-		d.file.Logger.Info("директория ./" + internalDir + "/" + currentDir)
+		d.logCreteDir(internalDir + "/" + currentDir)
 	}
 
 	return nil

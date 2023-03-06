@@ -33,7 +33,7 @@ func (fl File) createAndWriteFile(dir, content string) error {
 		return err
 	}
 
-	fl.Logger.Info("Файл " + dir + " успешно создан")
+	fl.Logger.Info("Файл ./" + dir + " успешно создан")
 
 	return nil
 }

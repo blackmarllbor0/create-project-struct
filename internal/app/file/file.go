@@ -2,21 +2,18 @@ package file
 
 import (
 	"fmt"
-	"github.com/blackmarllboro/create-project-struct/internal"
 	"github.com/blackmarllboro/create-project-struct/pkg/version"
 	"os"
 	"path"
 )
 
 type File struct {
-	Logger internal.Logger
 }
 
-func NewFile(logger internal.Logger) *File {
-	return &File{Logger: logger}
+func NewFile() *File {
+	return &File{}
 }
 
-// createAndWriteFile создает файл с заданным именем и вписывает в файл переданный контент.
 func (fl File) createAndWriteFile(dir, content string) error {
 	f, err := os.Create(dir)
 	if err != nil {
@@ -33,12 +30,9 @@ func (fl File) createAndWriteFile(dir, content string) error {
 		return err
 	}
 
-	fl.Logger.Info("Файл ./" + dir + " успешно создан")
-
 	return nil
 }
 
-// GenerateMainFile создает основной файл приложения с именем проекта
 func (fl File) GenerateMainFile(dir string) error {
 	const content = `
 package main
@@ -57,7 +51,6 @@ func main() {
 	return nil
 }
 
-// GenerateCfgFile создает конфигурационный файл config.yaml.
 func (fl File) GenerateCfgFile(dir string) error {
 	if err := fl.createAndWriteFile(dir+"/config.yaml", ""); err != nil {
 		return err
@@ -66,7 +59,6 @@ func (fl File) GenerateCfgFile(dir string) error {
 	return nil
 }
 
-// GenerateGoModFile создает go.mod файл с именем проекта.
 func (fl File) GenerateGoModFile(dir string) error {
 	goVersion, err := version.GoVersion()
 	if err != nil {

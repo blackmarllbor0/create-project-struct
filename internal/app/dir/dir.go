@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/blackmarllboro/create-project-struct/internal"
 	"github.com/blackmarllboro/create-project-struct/internal/app/file"
 	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
@@ -26,11 +25,10 @@ type Dirs struct {
 	file        *file.File
 }
 
-func NewDirs(log internal.Logger) *Dirs {
-	return &Dirs{file: file.NewFile(log)}
+func NewDirs() *Dirs {
+	return &Dirs{file: file.NewFile()}
 }
 
-// CreateProject создает проект.
 func (d *Dirs) CreateProject() error {
 	if err := d.createProjectDir(); err != nil {
 		return err
@@ -43,7 +41,6 @@ func (d *Dirs) CreateProject() error {
 	return nil
 }
 
-// CreateProjectDir создает корневую папку проекта.
 func (d *Dirs) createProjectDir() error {
 	projectDir, currentDir, err := args.GetProjectName()
 	d.projectName = projectDir
@@ -55,19 +52,11 @@ func (d *Dirs) createProjectDir() error {
 		if err := os.Mkdir(d.projectName, perm); err != nil {
 			return errors.New("такая директория уже существует")
 		}
-
-		d.file.Logger.Info("корневая директория проекта успешно создана")
 	}
 
 	return nil
 }
 
-// logCreteDir выводит лог о создании переданной директории.
-func (d *Dirs) logCreteDir(dir string) {
-	d.file.Logger.Info("директория ./" + dir + " успешно создана")
-}
-
-// createProjectDirs создает структуру папок в директории с проектом.
 func (d *Dirs) createProjectDirs() error {
 	projectDirs := [4]string{cmdDir, pkgDir, internalDir, cfgDir}
 	for i := 0; i < len(projectDirs); i++ {
@@ -92,8 +81,6 @@ func (d *Dirs) createProjectDirs() error {
 				return err
 			}
 		}
-
-		d.logCreteDir(currentDir)
 	}
 
 	currentDir, err := os.Getwd()
@@ -108,7 +95,6 @@ func (d *Dirs) createProjectDirs() error {
 	return nil
 }
 
-// createInternalSubDir создает подкаталоги "app" и pkg в директории internal.
 func (d *Dirs) createInternalSubDir() error {
 	internalSubDirs := [2]string{pkgDir, appDir}
 
@@ -120,8 +106,6 @@ func (d *Dirs) createInternalSubDir() error {
 		if err := os.Mkdir(createSubDirPath, perm); err != nil {
 			return err
 		}
-
-		d.logCreteDir(internalDir + "/" + currentDir)
 	}
 
 	return nil

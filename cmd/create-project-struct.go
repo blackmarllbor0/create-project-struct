@@ -9,7 +9,7 @@ import (
 func main() {
 	logger := log.New()
 
-	project := dir.NewDirs(logger)
+	project := dir.NewDirs()
 	if err := project.CreateProject(); err != nil {
 		logger.Error(err)
 	}

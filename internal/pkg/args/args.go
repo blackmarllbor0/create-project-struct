@@ -11,11 +11,11 @@ import (
 // Булево значение возвращает true в том случае, если приложение
 // создается в текущем каталоге.
 func GetProjectName() (string, bool, error) {
-	projectName := os.Args[1]
-
-	if projectName == "" {
-		return "", false, errors.New("имя проекта не было передано")
+	if len(os.Args) < 2 {
+		return "", false, errors.New("the project name has not been transferred")
 	}
+
+	projectName := os.Args[1]
 
 	if projectName == "." {
 		pwd, err := os.Getwd()

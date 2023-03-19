@@ -59,7 +59,7 @@ func (fl File) GenerateCfgFile(dir string) error {
 	return nil
 }
 
-func (fl File) GenerateGoModFile(dir string) error {
+func (fl File) GenerateGoModFile(dir string, currentDir bool) error {
 	goVersion, err := version.GoVersion()
 	if err != nil {
 		return err
@@ -69,7 +69,14 @@ func (fl File) GenerateGoModFile(dir string) error {
 
 	content := fmt.Sprintf("module %s\n\n%s", projectName, goVersion)
 
-	if err := fl.createAndWriteFile(projectName+"/go.mod", content); err != nil {
+	var creatingFile string
+	if currentDir {
+		creatingFile = "go.mod"
+	} else {
+		creatingFile = projectName + "/go.mod"
+	}
+
+	if err := fl.createAndWriteFile(creatingFile, content); err != nil {
 		return err
 	}
 

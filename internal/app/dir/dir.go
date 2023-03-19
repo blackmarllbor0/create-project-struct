@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/blackmarllboro/create-project-struct/internal/app/file"
 	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
@@ -22,6 +23,7 @@ const (
 
 type Dirs struct {
 	projectName string
+	currentDir  bool
 	file        *file.File
 }
 
@@ -43,14 +45,15 @@ func (d *Dirs) CreateProject() error {
 
 func (d *Dirs) createProjectDir() error {
 	projectDir, currentDir, err := args.GetProjectName()
-	d.projectName = projectDir
+	d.projectName = path.Base(projectDir)
+	d.currentDir = currentDir
 	if err != nil {
 		return err
 	}
 
 	if !currentDir {
 		if err := os.Mkdir(d.projectName, perm); err != nil {
-			return errors.New("такая директория уже существует")
+			return errors.New("this directory already exists")
 		}
 	}
 
@@ -62,7 +65,13 @@ func (d *Dirs) createProjectDirs() error {
 	for i := 0; i < len(projectDirs); i++ {
 		currentDir := projectDirs[i]
 
-		dir := fmt.Sprintf("%s/%s", d.projectName, currentDir)
+		var dir string
+		if d.currentDir {
+			dir = currentDir
+		} else {
+			dir = fmt.Sprintf("%s/%s", d.projectName, currentDir)
+		}
+
 		if err := os.Mkdir(dir, perm); err != nil {
 			return err
 		}
@@ -88,7 +97,7 @@ func (d *Dirs) createProjectDirs() error {
 		return err
 	}
 
-	if err := d.file.GenerateGoModFile(currentDir + "/" + d.projectName); err != nil {
+	if err := d.file.GenerateGoModFile(currentDir+"/"+d.projectName, d.currentDir); err != nil {
 		return err
 	}
 
@@ -101,7 +110,12 @@ func (d *Dirs) createInternalSubDir() error {
 	for i := 0; i < len(internalSubDirs); i++ {
 		currentDir := internalSubDirs[i]
 
-		createSubDirPath := d.projectName + "/" + internalDir + "/" + currentDir
+		var createSubDirPath string
+		if !d.currentDir {
+			createSubDirPath = d.projectName + "/" + internalDir + "/" + currentDir
+		} else {
+			createSubDirPath = internalDir + "/" + currentDir
+		}
 
 		if err := os.Mkdir(createSubDirPath, perm); err != nil {
 			return err

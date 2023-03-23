@@ -1,6 +1,6 @@
 module github.com/blackmarllboro/create-project-struct
 
-go 1.19
+go 1.18
 
 require github.com/charmbracelet/log v0.1.2
 

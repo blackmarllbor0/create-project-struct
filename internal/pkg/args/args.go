@@ -5,11 +5,10 @@ import (
 	"os"
 )
 
-// GetProjectName функция для получения имени проекта.
-// Имя задается через аргумент командной строки.
-// Задайте аргумент ".", чтобы создать проект в текущей директории.
-// Булево значение возвращает true в том случае, если приложение
-// создается в текущем каталоге.
+// GetProjectName function for getting the project name. The name is specified
+// via a command line argument. Set the argument "." to create a project in the
+// current directory. Boolean value returns true if the application is created in
+// the current directory.
 func GetProjectName() (string, bool, error) {
 	if len(os.Args) < 2 {
 		return "", false, errors.New("the project name has not been transferred")

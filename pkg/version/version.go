@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// GoVersion получает текущую версию go и возвращает ее в формате go X.Y.
+// GoVersion receives the current version of go and returns it in go X.Y format.
 func GoVersion() (string, error) {
 	cmd := exec.Command("go", "version")
 	output, err := cmd.Output()
@@ -14,11 +14,11 @@ func GoVersion() (string, error) {
 		return "", err
 	}
 
-	// для поиска нужной части в строке.
+	// to search for the desired part in the string.
 	re := regexp.MustCompile(`go\d+\.\d+(\.\d+)?`)
 	version := re.FindString(string(output))
 
-	// преобразуем к нужному виду.
+	// convert to the desired form.
 	version = strings.Replace(version, "go", "", 1)
 	versionParts := strings.Split(version, ".")
 	version = "go " + versionParts[1] + "." + versionParts[2]

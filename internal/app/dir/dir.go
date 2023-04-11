@@ -10,9 +10,9 @@ import (
 	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
 
-const perm = 0755 // Право доступа для создания папок
+const perm = 0755 // Access rights to create folders
 
-// Константы с именем подкаталогов проекта
+// Constants with the name of the project subdirectories
 const (
 	cmdDir      = "cmd"
 	pkgDir      = "pkg"

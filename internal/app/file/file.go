@@ -2,9 +2,10 @@ package file
 
 import (
 	"fmt"
-	"github.com/blackmarllboro/create-project-struct/pkg/version"
 	"os"
 	"path"
+
+	"github.com/blackmarllboro/create-project-struct/pkg/version"
 )
 
 type File struct {

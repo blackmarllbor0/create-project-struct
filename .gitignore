@@ -1,1 +1,4 @@
 .idea
+
+# thses are not code tests, but tests of the application itself
+test

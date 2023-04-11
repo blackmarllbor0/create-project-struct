@@ -22,9 +22,9 @@ const (
 )
 
 type Dirs struct {
-	projectName string
-	currentDir  bool
-	file        *file.File
+	projectName  string
+	isCurrentDir bool
+	file         *file.File
 }
 
 func NewDirs() *Dirs {
@@ -46,7 +46,7 @@ func (d *Dirs) CreateProject() error {
 func (d *Dirs) createProjectDir() error {
 	projectDir, currentDir, err := args.GetProjectName()
 	d.projectName = path.Base(projectDir)
-	d.currentDir = currentDir
+	d.isCurrentDir = currentDir
 	if err != nil {
 		return err
 	}
@@ -62,11 +62,12 @@ func (d *Dirs) createProjectDir() error {
 
 func (d *Dirs) createProjectDirs() error {
 	projectDirs := [4]string{cmdDir, pkgDir, internalDir, cfgDir}
+
 	for i := 0; i < len(projectDirs); i++ {
 		currentDir := projectDirs[i]
 
 		var dir string
-		if d.currentDir {
+		if d.isCurrentDir {
 			dir = currentDir
 		} else {
 			dir = fmt.Sprintf("%s/%s", d.projectName, currentDir)
@@ -76,7 +77,7 @@ func (d *Dirs) createProjectDirs() error {
 			return err
 		}
 
-		// в зависимости от текущего создаваемого каталога создаём файлы или подкаталоги.
+		// depending on the current directory being created, create files or subdirectories.
 		if currentDir == cmdDir {
 			if err := d.file.GenerateMainFile(dir + "/" + d.projectName + ".go"); err != nil {
 				return err
@@ -97,7 +98,11 @@ func (d *Dirs) createProjectDirs() error {
 		return err
 	}
 
-	if err := d.file.GenerateGoModFile(currentDir+"/"+d.projectName, d.currentDir); err != nil {
+	if err := d.file.GenerateGoModFile(currentDir+"/"+d.projectName, d.isCurrentDir); err != nil {
+		return err
+	}
+
+	if err := d.file.GenerateMakefile(d.projectName, d.isCurrentDir); err != nil {
 		return err
 	}
 
@@ -111,7 +116,7 @@ func (d *Dirs) createInternalSubDir() error {
 		currentDir := internalSubDirs[i]
 
 		var createSubDirPath string
-		if !d.currentDir {
+		if !d.isCurrentDir {
 			createSubDirPath = d.projectName + "/" + internalDir + "/" + currentDir
 		} else {
 			createSubDirPath = internalDir + "/" + currentDir

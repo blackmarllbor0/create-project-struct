@@ -16,3 +16,6 @@ rm-program:
 
 test:
 	sudo make rm-program && make exec
+
+clear:
+	sh ./script/clear.sh

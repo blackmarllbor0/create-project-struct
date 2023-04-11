@@ -13,4 +13,6 @@ func main() {
 	if err := project.CreateProject(); err != nil {
 		logger.Error(err)
 	}
+
+	logger.Info("the project dir has been successfully created")
 }

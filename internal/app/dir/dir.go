@@ -12,7 +12,7 @@ import (
 
 const perm = 0755 // Access rights to create folders
 
-// Constants with the name of the project subdirectories
+// Constants with the name of the project subdirectories.
 const (
 	cmdDir      = "cmd"
 	pkgDir      = "pkg"
@@ -60,6 +60,8 @@ func (d *Dirs) createProjectDir() error {
 	return nil
 }
 
+// TODO calculated cyclomatic complexity for function createProjectDirs is 13,
+// max is 10.
 func (d *Dirs) createProjectDirs() error {
 	projectDirs := [4]string{cmdDir, pkgDir, internalDir, cfgDir}
 
@@ -78,15 +80,16 @@ func (d *Dirs) createProjectDirs() error {
 		}
 
 		// depending on the current directory being created, create files or subdirectories.
-		if currentDir == cmdDir {
+		switch currentDir {
+		case cmdDir:
 			if err := d.file.GenerateMainFile(dir + "/" + d.projectName + ".go"); err != nil {
 				return err
 			}
-		} else if currentDir == internalDir {
+		case internalDir:
 			if err := d.createInternalSubDir(); err != nil {
 				return err
 			}
-		} else if currentDir == cfgDir {
+		case cfgDir:
 			if err := d.file.GenerateCfgFile(dir); err != nil {
 				return err
 			}

@@ -15,18 +15,18 @@ func NewFile() *File {
 }
 
 func (fl File) createAndWriteFile(dir, content string) error {
-	f, err := os.Create(dir)
+	file, err := os.Create(dir)
 	if err != nil {
 		return err
 	}
 	defer func() {
-		err = f.Close()
+		err = file.Close()
 	}()
 	if err != nil {
 		return err
 	}
 
-	if _, err := f.WriteString(content); err != nil {
+	if _, err := file.WriteString(content); err != nil {
 		return err
 	}
 

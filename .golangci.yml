@@ -1,0 +1,36 @@
+run:
+  tests: true
+  skip-dirs:
+    - build
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  unique-by-line: true
+  sort-results: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - typecheck
+    - unused
+    - cyclop
+    - dupl
+    - dupword
+    - funlen
+    - lll
+    - gochecknoglobals
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gosec
+    - nakedret
+    - nestif
+    - stylecheck
+    - varnamelen

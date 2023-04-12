@@ -28,13 +28,13 @@ func TestGetProjectName(t *testing.T) {
 			t.Fatalf("Expected an error, got nil")
 		}
 
-		wd, err := os.Getwd()
+		pwd, err := os.Getwd()
 		if err != nil {
 			t.Fatalf("Fail to get current directory: %s", err.Error())
 		}
 
-		if projectName != wd {
-			t.Fatalf("Expected project name to be: %s, got: %s", wd, projectName)
+		if projectName != pwd {
+			t.Fatalf("Expected project name to be: %s, got: %s", pwd, projectName)
 		}
 
 		if !isCurrentDir {

@@ -35,3 +35,7 @@ test:
 .PHONE: clear
 clear:
 	sh ./script/clear.sh
+
+.PHONY: lint
+lint:
+	golangci-lint run

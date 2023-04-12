@@ -87,9 +87,10 @@ func (fl File) GenerateMakefile(projectName string, isCurrentDir bool) error {
 	content := fmt.Sprintf(
 		"PROJECT_NAME = %s\n"+
 			"PROJECT_PATH = cmd/$(PROJECT_NAME).go\n"+
-			"run:\n\tgo run $(PROJECT_PATH)\n\n"+
-			"build:\n\tgo build -o bin/$(PROGRAM_NAME) $(PROJECT_PATH)\n\n"+
-			"lint:\n\tgolangci-lint run",
+			".PHONY:run\nrun:\n\tgo run $(PROJECT_PATH)\n\n"+
+			".PHONY:build\nbuild:\n\tgo build -o bin/$(PROGRAM_NAME) $(PROJECT_PATH)\n\n"+
+			".PHONY:test\ntest:\n\tgo test ./...\n\n"+
+			".PHONY:lint\nlint:\n\tgolangci-lint run",
 		projectName,
 	)
 

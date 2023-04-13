@@ -59,7 +59,7 @@ func (fl File) GenerateCfgFile(dir string) error {
 	return nil
 }
 
-func (fl File) GenerateGoModFile(dir string, isCurrentDir bool) error {
+func (fl File) generateGoModFile(dir string, isCurrentDir bool) error {
 	goVersion, err := version.GoVersion()
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func (fl File) GenerateGoModFile(dir string, isCurrentDir bool) error {
 	return nil
 }
 
-func (fl File) GenerateMakefile(projectName string, isCurrentDir bool) error {
+func (fl File) generateMakefile(projectName string, isCurrentDir bool) error {
 	if !isCurrentDir {
 		projectName = path.Base(projectName)
 	}
@@ -122,11 +122,11 @@ func (fl File) GenerateFilesInMainDir(projectName string, isCurrentDir bool) err
 		currentDir += fmt.Sprintf("/%s", projectName)
 	}
 
-	if err := fl.GenerateGoModFile(currentDir, isCurrentDir); err != nil {
+	if err := fl.generateGoModFile(currentDir, isCurrentDir); err != nil {
 		return err
 	}
 
-	if err := fl.GenerateMakefile(currentDir, isCurrentDir); err != nil {
+	if err := fl.generateMakefile(currentDir, isCurrentDir); err != nil {
 		return err
 	}
 

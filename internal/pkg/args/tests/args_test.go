@@ -8,9 +8,11 @@ import (
 )
 
 func TestGetProjectName(t *testing.T) {
+	projName := args.ProjectName{}
+
 	t.Log("no project name provided")
 	{
-		projectName, _, err := args.GetProjectName()
+		projectName, _, err := projName.GetProjectName()
 		if err != nil {
 			t.Fatalf("Expected an error, got nil")
 		}
@@ -23,7 +25,7 @@ func TestGetProjectName(t *testing.T) {
 	t.Log("projectName is \".\"")
 	{
 		os.Args = []string{"cmd", "."}
-		projectName, isCurrentDir, err := args.GetProjectName()
+		projectName, isCurrentDir, err := projName.GetProjectName()
 		if err != nil {
 			t.Fatalf("Expected an error, got nil")
 		}
@@ -46,7 +48,7 @@ func TestGetProjectName(t *testing.T) {
 	{
 		testProjectName := "test_project"
 		os.Args = []string{"cmd", testProjectName}
-		projectName, isCurrentDir, err := args.GetProjectName()
+		projectName, isCurrentDir, err := projName.GetProjectName()
 		if err != nil {
 			t.Fatalf("Expected an error, got nil")
 		}

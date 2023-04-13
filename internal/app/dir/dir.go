@@ -3,11 +3,11 @@ package dir
 import (
 	"errors"
 	"fmt"
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 	"os"
 	"path"
 
 	"github.com/blackmarllboro/create-project-struct/internal/app/file"
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
 
 const perm = 0755 // Access rights to create folders
@@ -25,10 +25,11 @@ type Dirs struct {
 	projectName  string
 	isCurrentDir bool
 	file         *file.File
+	name         args.GetProjectName
 }
 
-func NewDirs() *Dirs {
-	return &Dirs{file: file.NewFile()}
+func NewDirs(f *file.File, p args.ProjectName) *Dirs {
+	return &Dirs{file: f, name: p}
 }
 
 func (d *Dirs) CreateProject() error {
@@ -44,7 +45,7 @@ func (d *Dirs) CreateProject() error {
 }
 
 func (d *Dirs) createProjectDir() error {
-	projectDir, currentDir, err := args.GetProjectName()
+	projectDir, currentDir, err := d.name.GetProjectName()
 	d.projectName = path.Base(projectDir)
 	d.isCurrentDir = currentDir
 	if err != nil {

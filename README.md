@@ -27,10 +27,14 @@ to be called. For example `cps my-app`.
 
 ### What does this program?
 
-`cps` creates a root project structure, with ready-made 
-templates. It also creates a main package with the template
-output **Hello!** and a **go.mod** file with the project 
-name and your locale language version.
+1. Basic structure taken from the standards;
+2. Layout of the main file;
+3. File `go.mod` with project name;
+4. Makefile with parameters:
+   1. build: builds the application;
+   2. run: start the app in dev mode;
+   3. test: rub all tests;
+   4. lint: checks your project for design errors;
 
 ### What is expected next?
 

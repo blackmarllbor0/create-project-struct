@@ -60,10 +60,8 @@ func (d *Dirs) createProjectDir() error {
 	return nil
 }
 
-// TODO calculated cyclomatic complexity for function createProjectDirs is 13,
-// max is 10.
 func (d *Dirs) createProjectDirs() error {
-	projectDirs := [4]string{cmdDir, pkgDir, internalDir, cfgDir}
+	projectDirs := [3]string{cmdDir, internalDir, cfgDir}
 
 	for i := 0; i < len(projectDirs); i++ {
 		currentDir := projectDirs[i]
@@ -80,32 +78,12 @@ func (d *Dirs) createProjectDirs() error {
 		}
 
 		// depending on the current directory being created, create files or subdirectories.
-		switch currentDir {
-		case cmdDir:
-			if err := d.file.GenerateMainFile(dir + "/" + d.projectName + ".go"); err != nil {
-				return err
-			}
-		case internalDir:
-			if err := d.createInternalSubDir(); err != nil {
-				return err
-			}
-		case cfgDir:
-			if err := d.file.GenerateCfgFile(dir); err != nil {
-				return err
-			}
+		if err := d.createFilesInSubdirs(currentDir, dir); err != nil {
+			return err
 		}
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	if err := d.file.GenerateGoModFile(currentDir+"/"+d.projectName, d.isCurrentDir); err != nil {
-		return err
-	}
-
-	if err := d.file.GenerateMakefile(d.projectName, d.isCurrentDir); err != nil {
+	if err := d.file.GenerateFilesInMainDir(d.projectName, d.isCurrentDir); err != nil {
 		return err
 	}
 
@@ -126,6 +104,25 @@ func (d *Dirs) createInternalSubDir() error {
 		}
 
 		if err := os.Mkdir(createSubDirPath, perm); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (d *Dirs) createFilesInSubdirs(currentDir, dir string) error {
+	switch currentDir {
+	case cmdDir:
+		if err := d.file.GenerateMainFile(dir + fmt.Sprintf("/%s", d.projectName) + ".go"); err != nil {
+			return err
+		}
+	case internalDir:
+		if err := d.createInternalSubDir(); err != nil {
+			return err
+		}
+	case cfgDir:
+		if err := d.file.GenerateCfgFile(dir); err != nil {
 			return err
 		}
 	}

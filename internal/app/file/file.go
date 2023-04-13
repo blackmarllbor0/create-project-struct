@@ -84,6 +84,10 @@ func (fl File) GenerateGoModFile(dir string, isCurrentDir bool) error {
 }
 
 func (fl File) GenerateMakefile(projectName string, isCurrentDir bool) error {
+	if !isCurrentDir {
+		projectName = path.Base(projectName)
+	}
+
 	content := fmt.Sprintf(
 		"PROJECT_NAME = %s\n"+
 			"PROJECT_PATH = cmd/$(PROJECT_NAME).go\n\n"+
@@ -102,6 +106,27 @@ func (fl File) GenerateMakefile(projectName string, isCurrentDir bool) error {
 	}
 
 	if err := fl.createAndWriteFile(creatingFile, content); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (fl File) GenerateFilesInMainDir(projectName string, isCurrentDir bool) error {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if !isCurrentDir {
+		currentDir += fmt.Sprintf("/%s", projectName)
+	}
+
+	if err := fl.GenerateGoModFile(currentDir, isCurrentDir); err != nil {
+		return err
+	}
+
+	if err := fl.GenerateMakefile(currentDir, isCurrentDir); err != nil {
 		return err
 	}
 

@@ -35,13 +35,13 @@ to be called. For example `cps my-app`.
    2. run: start the app in dev mode;
    3. test: rub all tests;
    4. lint: checks your project for design errors;
+5. Creates a local repository
 
 ### What is expected next?
 
 Expected in upcoming updates:
 
 1. Adding configuration for **golangci-lint**
-2. Creating s local git repository.
 
 ### Conclusion
 

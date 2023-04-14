@@ -2,9 +2,10 @@ package git
 
 import (
 	"fmt"
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 	"os"
 	"os/exec"
+
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
 
 func CreateLocalGitRepository(projectName args.GetProjectName) error {

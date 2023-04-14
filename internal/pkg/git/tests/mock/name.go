@@ -11,5 +11,5 @@ func (i IsCurrentDirIsFalse) GetProjectName() (string, bool, error) {
 type IsCurrentDirIsTrue struct{}
 
 func (i IsCurrentDirIsTrue) GetProjectName() (string, bool, error) {
-	return TestDir, false, nil
+	return "", true, nil
 }

@@ -13,12 +13,14 @@ import (
 func main() {
 	logger := log.NewLogger(l.New())
 
-	project := dir.NewDirs(file.NewFile(), args.ProjectName{})
+	projName := args.ProjectName{}
+
+	project := dir.NewDirs(file.NewFile(), projName)
 	if err := project.CreateProject(); err != nil {
 		logger.Error(err)
 	}
 
-	if err := git.CreateLocalGitRepository(args.ProjectName{}); err != nil {
+	if err := git.CreateLocalGitRepository(projName); err != nil {
 		logger.Error(err)
 	}
 

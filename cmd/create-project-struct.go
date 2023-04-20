@@ -1,15 +1,6 @@
 package main
 
-import (
-	"log"
-
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/temp"
-)
-
 func main() {
-	if _, err := temp.GetTemplateByAlias(temp.MAIN); err != nil {
-		log.Println(err)
-	}
 	//logger := log.NewLogger(l.New())
 	//
 	//projName := args.ProjectName{}

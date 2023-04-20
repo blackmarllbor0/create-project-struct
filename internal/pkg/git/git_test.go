@@ -1,13 +1,13 @@
-package tests
+package git
 
 import (
 	"fmt"
 	"os"
 	"testing"
 
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/args/mocks"
+
 	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args/tests/mocks"
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/git"
 )
 
 func TestCreateLocalGitRepository(t *testing.T) {
@@ -44,7 +44,7 @@ func TestCreateLocalGitRepository(t *testing.T) {
 
 			t.Log("create repository in dir: ", dataT.name)
 			{
-				if err := git.CreateLocalGitRepository(dataT.mock); err != nil {
+				if err := CreateLocalGitRepository(dataT.mock); err != nil {
 					t.Fatalf("Expected no error, but got: %s", err)
 				}
 			}

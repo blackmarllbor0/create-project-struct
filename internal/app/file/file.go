@@ -8,6 +8,8 @@ import (
 	"github.com/blackmarllboro/create-project-struct/pkg/version"
 )
 
+// TODO need to works on layouts.
+
 type File struct{}
 
 func NewFile() *File {

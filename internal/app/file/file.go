@@ -16,15 +16,6 @@ func NewFile() *File {
 	return &File{}
 }
 
-func (fl File) readTemplate(templateFileName string) ([]byte, error) {
-	temp, err := os.ReadFile(templateFileName)
-	if err != nil {
-		return nil, err
-	}
-
-	return temp, nil
-}
-
 func (fl File) createAndWriteFile(dir, content string) error {
 	file, err := os.Create(dir)
 	if err != nil {
@@ -37,12 +28,7 @@ func (fl File) createAndWriteFile(dir, content string) error {
 		return err
 	}
 
-	temp, err := fl.readTemplate(content)
-	if err != nil {
-		return err
-	}
-
-	if _, err := file.Write(temp); err != nil {
+	if _, err := file.WriteString(content); err != nil {
 		return err
 	}
 

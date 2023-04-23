@@ -1,9 +1,11 @@
 package log
 
+import "github.com/blackmarllboro/create-project-struct/internal/pkg/log/interfaces"
+
 type Log struct {
-	Logger
+	interfaces.Logger
 }
 
-func NewLogger(logger Logger) *Log {
+func NewLogger(logger interfaces.Logger) *Log {
 	return &Log{Logger: logger}
 }

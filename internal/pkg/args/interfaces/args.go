@@ -1,4 +1,4 @@
-package args
+package interfaces
 
 type GetProjectName interface {
 	GetProjectName() (string, bool, error)

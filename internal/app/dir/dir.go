@@ -1,13 +1,12 @@
 package dir
 
 import (
-	"errors"
 	"fmt"
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 	"os"
 	"path"
 
-	"github.com/blackmarllboro/create-project-struct/internal/app/file"
+	fileI "github.com/blackmarllboro/create-project-struct/internal/app/file/interfaces"
+	argsI "github.com/blackmarllboro/create-project-struct/internal/pkg/args/interfaces"
 )
 
 const perm = 0755 // Access rights to create folders
@@ -24,21 +23,22 @@ const (
 type Dirs struct {
 	projectName  string
 	isCurrentDir bool
-	file         *file.File
-	name         args.GetProjectName
+
+	file fileI.File
+	name argsI.GetProjectName
 }
 
-func NewDirs(f *file.File, p args.ProjectName) *Dirs {
-	return &Dirs{file: f, name: p}
+func NewDirs(file fileI.File, name argsI.GetProjectName) *Dirs {
+	return &Dirs{file: file, name: name}
 }
 
 func (d *Dirs) CreateProject() error {
 	if err := d.createProjectDir(); err != nil {
-		return err
+		return fmt.Errorf("failed to create project directory: %v", err)
 	}
 
 	if err := d.createProjectDirs(); err != nil {
-		return err
+		return fmt.Errorf("failed to create project directories: %v", err)
 	}
 
 	return nil
@@ -49,12 +49,12 @@ func (d *Dirs) createProjectDir() error {
 	d.projectName = path.Base(projectDir)
 	d.isCurrentDir = currentDir
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get project name, err: %s", err)
 	}
 
 	if !currentDir {
 		if err := os.Mkdir(d.projectName, perm); err != nil {
-			return errors.New("this directory already exists")
+			return fmt.Errorf("failed to create dir, err: %v", err)
 		}
 	}
 
@@ -75,17 +75,17 @@ func (d *Dirs) createProjectDirs() error {
 		}
 
 		if err := os.Mkdir(dir, perm); err != nil {
-			return err
+			return fmt.Errorf("failed to create dir, err: %v", err)
 		}
 
-		// depending on the current directory being created, create files or subdirectories.
-		if err := d.createFilesInSubdirs(currentDir, dir); err != nil {
-			return err
-		}
 	}
 
-	if err := d.file.GenerateFilesInMainDir(d.projectName, d.isCurrentDir); err != nil {
-		return err
+	if err := d.createInternalSubDir(); err != nil {
+		return fmt.Errorf("failed to create internal sub dir, err: %v", err)
+	}
+
+	if err := d.file.GenerateFiles(d.isCurrentDir, d.projectName); err != nil {
+		return fmt.Errorf("failed to generate files, err: %v", err)
 	}
 
 	return nil
@@ -99,32 +99,13 @@ func (d *Dirs) createInternalSubDir() error {
 
 		var createSubDirPath string
 		if !d.isCurrentDir {
-			createSubDirPath = d.projectName + "/" + internalDir + "/" + currentDir
+			createSubDirPath = fmt.Sprintf("%s/%s/%s", d.projectName, internalDir, currentDir)
 		} else {
-			createSubDirPath = internalDir + "/" + currentDir
+			createSubDirPath = fmt.Sprintf("%s/%s", internalDir, currentDir)
 		}
 
 		if err := os.Mkdir(createSubDirPath, perm); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (d *Dirs) createFilesInSubdirs(currentDir, dir string) error {
-	switch currentDir {
-	case cmdDir:
-		if err := d.file.GenerateMainFile(dir + fmt.Sprintf("/%s", d.projectName) + ".go"); err != nil {
-			return err
-		}
-	case internalDir:
-		if err := d.createInternalSubDir(); err != nil {
-			return err
-		}
-	case cfgDir:
-		if err := d.file.GenerateCfgFile(dir); err != nil {
-			return err
+			return fmt.Errorf("failed to create dir, err: %v", err)
 		}
 	}
 

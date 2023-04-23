@@ -31,17 +31,19 @@ to be called. For example `cps my-app`.
 2. Layout of the main file;
 3. File `go.mod` with project name;
 4. Makefile with parameters:
-   1. build: builds the application;
-   2. run: start the app in dev mode;
-   3. test: rub all tests;
-   4. lint: checks your project for design errors;
-5. Creates a local repository
+   1. `build`: builds the application;
+   2. `run`: start the app in dev mode;
+   3. `test`: rub all tests;
+   4. `lint`: checks your project for design errors;
+5. Creates a local repository;
+6. Create a configuration file for `golangci-lint`;
 
 ### What is expected next?
 
 Expected in upcoming updates:
 
-1. Adding configuration for **golangci-lint**
+1. Building the project in PKGBUILD;
+2. Add some flags to select the type of project, some values (eg port for the server) in the terminal;
 
 ### Conclusion
 

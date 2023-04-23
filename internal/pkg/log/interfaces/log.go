@@ -1,4 +1,4 @@
-package log
+package interfaces
 
 type Logger interface {
 	Info(msg interface{}, keyvals ...interface{})

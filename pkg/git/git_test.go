@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args/mocks"
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/args/interfaces"
 
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/args/mocks"
 )
 
 func TestCreateLocalGitRepository(t *testing.T) {
@@ -15,7 +15,7 @@ func TestCreateLocalGitRepository(t *testing.T) {
 
 	data := []struct {
 		name string
-		mock args.GetProjectName
+		mock interfaces.GetProjectName
 	}{
 		{
 			name: currentDir,

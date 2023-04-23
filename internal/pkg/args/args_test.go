@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetProjectName(t *testing.T) {
-	projName := ProjectName{}
+	projName := Args{}
 
 	t.Log("no project name provided")
 	{

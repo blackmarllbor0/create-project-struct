@@ -1,6 +1,7 @@
 package version
 
 import (
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -11,7 +12,7 @@ func GoVersion() (string, error) {
 	cmd := exec.Command("go", "version")
 	output, err := cmd.Output()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get output of 'go version', err: %v", err)
 	}
 
 	// to search for the desired part in the string.

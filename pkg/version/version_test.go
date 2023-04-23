@@ -1,7 +1,6 @@
-package tests
+package version
 
 import (
-	"github.com/blackmarllboro/create-project-struct/pkg/version"
 	"regexp"
 	"strconv"
 	"strings"
@@ -9,7 +8,7 @@ import (
 )
 
 func TestGetVersion(t *testing.T) {
-	vers, err := version.GoVersion()
+	vers, err := GoVersion()
 	if err != nil {
 		t.Fatalf("GoVersion() returned an error: %v", err)
 	}

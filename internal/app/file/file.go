@@ -3,15 +3,18 @@ package file
 import (
 	"fmt"
 	"os"
-	"path"
 
 	"github.com/blackmarllboro/create-project-struct/pkg/version"
+
+	"github.com/blackmarllboro/create-project-struct/internal/pkg/temp/interfaces"
 )
 
-type File struct{}
+type File struct {
+	temp interfaces.Template
+}
 
-func NewFile() *File {
-	return &File{}
+func NewFile(temp interfaces.Template) *File {
+	return &File{temp: temp}
 }
 
 func (fl File) createAndWriteFile(dir, content string) error {
@@ -19,115 +22,70 @@ func (fl File) createAndWriteFile(dir, content string) error {
 	if err != nil {
 		return err
 	}
+
 	defer func() {
 		err = file.Close()
 	}()
+
 	if err != nil {
 		return err
 	}
 
 	if _, err := file.WriteString(content); err != nil {
-		return err
+		return fmt.Errorf("failed to write file, err: %v", err)
 	}
 
 	return nil
 }
 
-func (fl File) GenerateMainFile(dir string) error {
-	const content = `
-package main
-
-import "fmt"
-
-func main() {
-	fmt.Println("Hello!")
-}
-`
-
-	if err := fl.createAndWriteFile(dir, content); err != nil {
-		return err
+func (fl File) getFileContent(fileName, projectName, goVersion string) string {
+	switch fileName {
+	case fmt.Sprintf("%s.go", projectName):
+		return fl.temp.GetMain()
+	case "golangci.yml":
+		return fl.temp.GetLintConfig()
+	case "Makefile":
+		return fl.temp.GetMakefile(projectName)
+	case "go.mod":
+		return fl.temp.GetGoMod(projectName, goVersion)
+	default:
+		return ""
 	}
-
-	return nil
 }
 
-func (fl File) GenerateCfgFile(dir string) error {
-	if err := fl.createAndWriteFile(dir+"/config.yaml", ""); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (fl File) generateGoModFile(dir string, isCurrentDir bool) error {
+func (fl File) GenerateFiles(isCurrentDir bool, projectName string) error {
 	goVersion, err := version.GoVersion()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get go version, err: %v", err)
 	}
 
-	projectName := path.Base(dir)
-
-	content := fmt.Sprintf("module %s\n\n%s", projectName, goVersion)
-
-	var creatingFile string
-	if isCurrentDir {
-		creatingFile = "go.mod"
-	} else {
-		creatingFile = projectName + "/go.mod"
+	mainGoFile := fmt.Sprintf("%s.go", projectName)
+	fileNames := []string{
+		mainGoFile,
+		"golangci.yml",
+		"Makefile",
+		"go.mod",
+		"config.yml",
 	}
 
-	if err := fl.createAndWriteFile(creatingFile, content); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (fl File) generateMakefile(projectName string, isCurrentDir bool) error {
+	dirPrefix := "./"
 	if !isCurrentDir {
-		projectName = path.Base(projectName)
+		dirPrefix = fmt.Sprintf("%s/", projectName)
 	}
 
-	content := fmt.Sprintf(
-		"PROJECT_NAME = %s\n"+
-			"PROJECT_PATH = cmd/$(PROJECT_NAME).go\n\n"+
-			".PHONY:run\nrun:\n\tgo run $(PROJECT_PATH)\n\n"+
-			".PHONY:build\nbuild:\n\tgo build -o bin/$(PROGRAM_NAME) $(PROJECT_PATH)\n\n"+
-			".PHONY:test\ntest:\n\tgo test ./...\n\n"+
-			".PHONY:lint\nlint:\n\tgolangci-lint run",
-		projectName,
-	)
+	for _, fileName := range fileNames {
+		filePath := dirPrefix + fileName
 
-	var creatingFile string
-	if isCurrentDir {
-		creatingFile = "Makefile"
-	} else {
-		creatingFile = projectName + "/Makefile"
-	}
+		switch fileName {
+		case mainGoFile:
+			filePath = fmt.Sprintf("%s/cmd/%s", dirPrefix, fileName)
+		case "config.yml":
+			filePath = fmt.Sprintf("%s/config/%s", dirPrefix, fileName)
+		}
 
-	if err := fl.createAndWriteFile(creatingFile, content); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (fl File) GenerateFilesInMainDir(projectName string, isCurrentDir bool) error {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	if !isCurrentDir {
-		currentDir += fmt.Sprintf("/%s", projectName)
-	}
-
-	if err := fl.generateGoModFile(currentDir, isCurrentDir); err != nil {
-		return err
-	}
-
-	if err := fl.generateMakefile(currentDir, isCurrentDir); err != nil {
-		return err
+		if err := fl.createAndWriteFile(filePath, fl.getFileContent(fileName, projectName, goVersion)); err != nil {
+			return fmt.Errorf("failed to write file data, err: %v", err)
+		}
 	}
 
 	return nil

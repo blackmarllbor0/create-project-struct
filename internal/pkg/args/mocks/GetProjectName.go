@@ -1,11 +1,11 @@
-package mock
+package mocks
 
-const TestDir = "test_dir"
+const ProjName = "new"
 
 type IsCurrentDirIsFalse struct{}
 
 func (i IsCurrentDirIsFalse) GetProjectName() (string, bool, error) {
-	return TestDir, false, nil
+	return ProjName, false, nil
 }
 
 type IsCurrentDirIsTrue struct{}

@@ -1,14 +1,12 @@
-package tests
+package args
 
 import (
 	"os"
 	"testing"
-
-	"github.com/blackmarllboro/create-project-struct/internal/pkg/args"
 )
 
 func TestGetProjectName(t *testing.T) {
-	projName := args.ProjectName{}
+	projName := Args{}
 
 	t.Log("no project name provided")
 	{

@@ -62,7 +62,7 @@ func (d *Dirs) createProjectDir() error {
 }
 
 func (d *Dirs) createProjectDirs() error {
-	projectDirs := [3]string{cmdDir, internalDir, cfgDir}
+	projectDirs := [4]string{cmdDir, internalDir, cfgDir, pkgDir}
 
 	for i := 0; i < len(projectDirs); i++ {
 		currentDir := projectDirs[i]
